@@ -1,0 +1,18 @@
+{
+    "subject": "Complaint Regarding Defective Bluetooth Headphones – Order #A123456",
+    "sender": {
+      "name": "Anil Sharma",
+      "email": "anil.sharma@email.com",
+      "phone": "+91 9045498634"
+    },
+    "recipient": "Customer Support Team",
+    "order_details": {
+      "product_name": "ZenoX Bluetooth Headphones – Model ZX100",
+      "order_number": "A123456",
+      "order_date": "2025-05-20",
+      "delivery_date": "2025-05-24"
+    },
+    "request": "Full refund or a replacement",
+    "content": "Dear Customer Support Team,\n\nI am writing to raise a complaint regarding a defective product I received from your online store. I purchased the ZenoX Bluetooth Headphones – Model ZX100 on May 20, 2025, and received the order on May 24, 2025 (Order #A123456).\n\nUnfortunately, the product has not met my expectations due to the following issues:\n- The left earbud does not produce any sound, even after multiple pairing attempts and resets.\n- The battery indicator shows full, but the device shuts down within 10 minutes of use.\n- The charging case arrived scratched and visibly worn, which is unacceptable for a new item.\n\nI followed all the troubleshooting instructions in the user manual, including resetting the headphones and using different charging cables, but the problems persist.\n\nTo support my claim, I’ve attached the following images:\n- headphones_left_no_sound.jpg – showing the power status while the left earbud is non-functional.\n- charging_case_scratched.jpg – clearly showing scratches on the case as it arrived.\n- order_receipt.jpg – screenshot of the order confirmation from your website.\n\nI request a full refund or a replacement as soon as possible. Please confirm the next steps and whether you require me to return the defective item.\n\nI look forward to a prompt resolution.\n\nBest regards,\nAnil Sharma"
+  }
+  

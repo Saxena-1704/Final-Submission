@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Agent AI System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .upload-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .drop-zone {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 60px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #f8f9ff, #fff);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .drop-zone::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+
+        .drop-zone:hover::before {
+            opacity: 1;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .drop-zone.dragover {
+            border-color: #4f46e5;
+            background: linear-gradient(45deg, #eef2ff, #f0f4ff);
+            transform: scale(1.02);
+        }
+
+        .drop-zone-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: #667eea;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .drop-zone h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #4f46e5;
+        }
+
+        .drop-zone p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .browse-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .browse-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .results-icon {
+            font-size: 2rem;
+            color: #10b981;
+            margin-right: 15px;
+        }
+
+        .results-title {
+            font-size: 1.8rem;
+            color: #1f2937;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #4f46e5;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .result-value {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .json-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .error {
+            background: linear-gradient(135deg, #fee2e2, #fef2f2);
+            border-left-color: #ef4444;
+            color: #dc2626;
+        }
+
+        .success {
+            background: linear-gradient(135deg, #d1fae5, #ecfdf5);
+            border-left-color: #10b981;
+        }
+
+        .file-info {
+            background: linear-gradient(135deg, #e0e7ff, #f0f4ff);
+            border-left-color: #6366f1;
+            margin-bottom: 25px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge-json { background: #dbeafe; color: #1e40af; }
+        .badge-txt { background: #fef3c7; color: #92400e; }
+        .badge-pdf { background: #fed7d7; color: #c53030; }
+        .badge-doc { background: #e0e7ff; color: #5b21b6; }
+        .badge-docx { background: #e0e7ff; color: #5b21b6; }
+        .badge-csv { background: #d1fae5; color: #065f46; }
+        .badge-xml { background: #fef3c7; color: #92400e; }
+
+        .clear-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            float: right;
+            transition: all 0.3s ease;
+        }
+
+        .clear-btn:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        .file-size-info {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Multi-Agent AI System</h1>
+            <p>Drop your files to process with intelligent classification agents</p>
+        </div>
+
+        <div class="upload-section">
+            <div class="drop-zone" id="dropZone">
+                <div class="drop-zone-content">
+                    <div class="upload-icon">📁</div>
+                    <h3>Drop your files here</h3>
+                    <p>Supports TXT, PDF, and JSON</p>
+                    <button class="browse-btn" onclick="document.getElementById('fileInput').click()">
+                        Browse Files
+                    </button>
+                </div>
+            </div>
+            <input type="file" id="fileInput" class="file-input" accept=".txt,.pdf,.json" multiple>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing your file with AI agents...</p>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <div class="results-icon">✨</div>
+                <div class="results-title">Processing Results</div>
+                <button class="clear-btn" onclick="clearResults()">Clear Results</button>
+            </div>
+            <div id="resultsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const loading = document.getElementById('loading');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsContainer = document.getElementById('resultsContainer');
+
+        // Drag and drop handlers
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        async function handleFiles(files) {
+            if (files.length === 0) return;
+
+            loading.style.display = 'block';
+            resultsSection.style.display = 'none';
+
+            for (let file of files) {
+                await processFile(file);
+            }
+
+            loading.style.display = 'none';
+            resultsSection.style.display = 'block';
+        }
+
+        async function processFile(file) {
+            try {
+                const fileType = getFileType(file.name);
+                console.log(`Processing ${file.name} as ${fileType} (${formatFileSize(file.size)})`);
+                
+                // Call Flask API backend
+                const result = await processWithFlaskAPI(file);
+                
+                displayResult(file.name, result, fileType, file.size);
+            } catch (error) {
+                console.error('Processing error:', error);
+                displayError(file.name, error.message);
+            }
+        }
+
+        function getFileType(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            const supportedTypes = ['txt', 'pdf', 'doc', 'docx', 'csv', 'json', 'xml'];
+            return supportedTypes.includes(ext) ? ext : 'unknown';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Process file through Flask API using FormData
+        async function processWithFlaskAPI(file) {
+            try {
+                console.log(`Sending ${file.name} to Flask API...`);
+                
+                // Create FormData to send file
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const response = await fetch('/api/classify', {
+                    method: 'POST',
+                    body: formData // No Content-Type header needed, browser sets it automatically
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || `API Error: ${response.status} ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                console.log('Flask API response:', result);
+                return result;
+                
+            } catch (error) {
+                console.error('Flask API Error:', error);
+                throw error;
+            }
+        }
+
+        function displayResult(filename, result, fileType, fileSize) {
+            const badge = `<span class="badge badge-${fileType}">${fileType.toUpperCase()}</span>`;
+            
+            const resultHTML = `
+                <div class="file-info result-card">
+                    <div class="result-label">📄 File Information ${badge}</div>
+                    <div class="result-value">
+                        <strong>Filename:</strong> ${filename}<br>
+                        <strong>Type:</strong> ${fileType}<br>
+                        <strong>Size:</strong> ${formatFileSize(fileSize)}<br>
+                        <strong>Status:</strong> ${result.success ? 'Success' : 'Failed'}<br>
+                        <strong>Timestamp:</strong> ${new Date().toLocaleString()}<br>
+                    </div>
+                </div>
+                
+                <div class="result-card ${result.success ? 'success' : 'error'}">
+                    <div class="result-label">${result.success ? '✅' : '❌'} Classification Result</div>
+                    <div class="result-value json-container">
+                        ${result.success ? 
+                            (typeof result.classification_result === 'string' ? 
+                                result.classification_result : 
+                                JSON.stringify(result.classification_result, null, 2)
+                            ) : 
+                            (result.error || 'Unknown error')
+                        }
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-label">🔍 Full Response</div>
+                    <div class="result-value json-container">
+                        ${JSON.stringify(result, null, 2)}
+                    </div>
+                </div>
+            `;
+            
+            resultsContainer.innerHTML += resultHTML;
+        }
+
+        function displayError(filename, error) {
+            const errorHTML = `
+                <div class="result-card error">
+                    <div class="result-label">❌ Error Processing ${filename}</div>
+                    <div class="result-value">${error}</div>
+                </div>
+            `;
+            resultsContainer.innerHTML += errorHTML;
+        }
+
+        function clearResults() {
+            resultsContainer.innerHTML = '';
+            resultsSection.style.display = 'none';
+            fileInput.value = '';
+        }
+
+        // Add some visual feedback
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add subtle animations
+            const cards = document.querySelectorAll('.upload-section, .results-section');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

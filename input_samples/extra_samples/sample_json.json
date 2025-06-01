@@ -1,0 +1,28 @@
+{
+  "invoice_number": "INV-2025-0012",
+  "date": "2025-05-30",
+  "sender": {
+    "name": "Tech Solutions Pvt Ltd",
+    "email": "accounts@techsolutions.com"
+  },
+  "recipient": {
+    "name": "Green Enterprises",
+    "email": "finance@greenenterprises.in"
+  },
+  "items": [
+    {
+      "description": "Industrial Sensor Model X",
+      "quantity": 10,
+      "unit_price": 2500.0
+    },
+    {
+      "description": "Wireless Controller Unit",
+      "quantity": 4,
+      "unit_price": 7500.0
+    }
+  ],
+  "total_amount": 40000.0,
+  "currency": "INR",
+  "payment_terms": "Net 30 days",
+  "status": "Unpaid"
+}

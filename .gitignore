@@ -1,0 +1,7 @@
+*memory.db
+venv
+.env
+uploads
+creds/*
+**__pycache__**
+venv313
